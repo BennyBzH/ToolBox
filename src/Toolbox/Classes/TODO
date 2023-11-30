@@ -1,0 +1,10 @@
+# BaseModel
+- [] Support d'autres Classes en props enums
+- [] Support des nesteds values (à réfléchir)
+- [] System de diff / Snapshot ?
+- [] Revoir la parie des Enum, je n'en suis pas satisfait, refaire ?
+
+
+# 1 Model = Une entité de données et fonctionnalité
+  - Pouvant se remplir à partir d'un object simple ou remapper.
+  - Pouvant optionnellement correspondre à un schema

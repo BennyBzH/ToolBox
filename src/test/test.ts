@@ -5,4 +5,4 @@ const user1 = data[0];
 
 const pickUser = UserModel.buildFromObj(user1, () => ({}));
 
-console.log({ pickUser, fullname: pickUser.getFullname() });
+console.log({ pickUser, fullname: pickUser.getFullname(), isAdmin: pickUser.roles.isAdmin() });

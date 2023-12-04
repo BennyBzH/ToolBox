@@ -1,5 +1,6 @@
 import { AddressModel } from '../Address';
 import AdvenceModel from '../../Toolbox/Classes/AdvenceModel/AdvenceModel';
+import Role from '../Roles/RoleList.model';
 
 export default class User extends AdvenceModel {
   fullname?: string;
@@ -7,6 +8,7 @@ export default class User extends AdvenceModel {
   lastname?: string;
   age: number = 0;
   address = AddressModel;
+  roles = Role;
   parents?: [];
   #test: string;
 

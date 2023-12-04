@@ -7,7 +7,8 @@
       "street": "0326 Dakota Knoll",
       "city": "Protaras"
     },
-    "parents": [4, 5]
+    "parents": [4, 5],
+    "roles": ["ROLE_NORMAL"]
   },
   {
     "lastname": "Nitzsche",

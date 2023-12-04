@@ -4,7 +4,7 @@ import BaseModel from '../../../Toolbox/Classes/BaseModel/BaseModel';
 export default abstract class ListModel extends Array {
   #__CurrentModel = null;
 
-  constructor(Model) {
+  constructor(Model: new (): T) {
     super();
     this.#__CurrentModel = Model;
   }

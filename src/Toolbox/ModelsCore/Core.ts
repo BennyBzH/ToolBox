@@ -4,7 +4,7 @@ import ListModel from './ListModel'
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export default class ModelsCore {
-  static getAllPropertiesDespcriptor (this, obj: Record<string, unknown>): Record<string, PropertyDescriptor> {
+  static getAllPropertiesDespcriptor (obj: Record<string, unknown>): Record<string, PropertyDescriptor> {
     if (typeof obj !== 'object') {
       return Object.create(null)
     } else {

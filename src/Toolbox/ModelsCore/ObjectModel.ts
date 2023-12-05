@@ -1,5 +1,7 @@
 import ModelsCore from './Core'
 
+type DefaultRecord = Record<string, unknown>
+
 export default abstract class ObjectModel {
   private static defineProperty (
     target: any,
@@ -15,12 +17,12 @@ export default abstract class ObjectModel {
 
   static buildFromObj<T extends ObjectModel>(
     this: { new (): T },
-    argObj: DefaultRecord,
+    argObj: DefaultRecord
     // remapper?: GetEnumerableFromInstance<T>
   ): T {
-    const ModelToUse = this
+    const ModelToUse = this as unknown as T
     const newThis = new ModelToUse()
-    console.log('buildFromObj : ', {fromInstance: this.name, argObj})
+    console.log('buildFromObj : ', { fromInstance: this.name, argObj })
 
     const propsDesc = ModelsCore.getAllPropertiesDespcriptor(newThis)
     const enumsBasics = ModelsCore.getBasicEnumerables(propsDesc)
@@ -32,7 +34,7 @@ export default abstract class ObjectModel {
 
     for (const prop in enumsBasics) {
       const propDesc = enumsBasics[prop];
-      ObjectModel.defineProperty(newThis, prop, propDesc, argObj[prop]);
+      ObjectModel.defineProperty(newThis, prop, propDesc, argObj[prop])
     }
 
     for (const prop in enumsFunctions) {
@@ -42,7 +44,7 @@ export default abstract class ObjectModel {
         prop,
         propDesc,
         propDesc.value(argObj[prop])
-      );
+      )
     }
 
     for (const prop in enumsObjectModels) {
@@ -70,6 +72,8 @@ export default abstract class ObjectModel {
     for (const prop in setters) {
       newThis[prop] = argObj[prop]
     }
+
+    console.log('before return :', { newThis })
 
     return newThis
   }

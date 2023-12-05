@@ -1,4 +1,4 @@
-import ListModel from '../../Toolbox/Classes/ListModel/ListModel';
+import ListModel from '../../Toolbox/ModelsCore/ListModel';
 import UserModel from './User.model';
 
 export default class UserList extends ListModel {

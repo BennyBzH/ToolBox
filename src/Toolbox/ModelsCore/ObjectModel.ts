@@ -1,130 +1,7 @@
-import ListModel from '../ListModel/ListModel';
-import { getAllPropertyDescriptors } from '../utils/getAllPropertyDescriptors';
+import ModelsCore from './Core'
 
-type DefaultRecord = Record<string, unknown>;
-type DescriptorRecord = Record<string, PropertyDescriptor>;
-
-type NonFunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends Function ? never : K;
-}[keyof T];
-
-type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
-
-type GetEnumerableFromInstance<T> = <
-  K extends Pick<T, keyof NonFunctionProperties<T>>
->() => {
-  [P in keyof K]?: string | Array<number | string>;
-};
-
-export default abstract class AdvenceModel {
-  private static getAllMethods(propsDesc: DescriptorRecord): DescriptorRecord {
-    const listMethods: DescriptorRecord = {};
-
-    for (const prop in propsDesc) {
-      const propDesc = propsDesc[prop];
-      if (!propDesc.enumerable && typeof propDesc.set === 'undefined') {
-        listMethods[prop] = propDesc;
-      }
-    }
-
-    return listMethods;
-  }
-
-  private static getAllSetters(propsDesc: DescriptorRecord): DescriptorRecord {
-    const listSetters: DescriptorRecord = {};
-
-    for (const prop in propsDesc) {
-      const propDesc = propsDesc[prop];
-      if (propDesc.set && typeof propDesc.set === 'function') {
-        listSetters[prop] = propDesc;
-      }
-    }
-
-    return listSetters;
-  }
-
-  private static getBasicEnumerables(
-    propsDesc: DescriptorRecord
-  ): DescriptorRecord {
-    const listEnums: DescriptorRecord = {};
-
-    for (const prop in propsDesc) {
-      const propDesc = propsDesc[prop];
-      if (
-        propDesc.enumerable &&
-        !(propDesc.value && typeof propDesc.value === 'function')
-      ) {
-        listEnums[prop] = propDesc;
-      }
-    }
-
-    return listEnums;
-  }
-
-  private static getEnumerablesHasFunction(
-    propsDesc: DescriptorRecord
-  ): DescriptorRecord {
-    const listEnums: DescriptorRecord = {};
-
-    for (const prop in propsDesc) {
-      const propDesc = propsDesc[prop];
-      if (
-        propDesc.enumerable &&
-        propDesc.value &&
-        typeof propDesc.value === 'function' &&
-        typeof propDesc.value.prototype === 'undefined'
-      ) {
-        listEnums[prop] = propDesc;
-      }
-    }
-
-    return listEnums;
-  }
-
-  private static getEnumerablesHasProtoAdvenceModel(
-    propsDesc: DescriptorRecord
-  ): DescriptorRecord {
-    const listEnums: DescriptorRecord = {};
-
-    for (const prop in propsDesc) {
-      const propDesc = propsDesc[prop];
-      if (
-        propDesc.enumerable &&
-        propDesc.value &&
-        typeof propDesc.value === 'function' &&
-        propDesc.value.prototype &&
-        (propDesc.value.prototype instanceof AdvenceModel)
-      ) {
-        listEnums[prop] = propDesc;
-      }
-    }
-
-    return listEnums;
-  }
-
-  private static getEnumerablesHasProtoListModel(
-    propsDesc: DescriptorRecord
-  ): DescriptorRecord {
-    const listEnums: DescriptorRecord = {};
-
-    
-    for (const prop in propsDesc) {
-      const propDesc = propsDesc[prop];
-      if (
-        propDesc.enumerable &&
-        propDesc.value &&
-        typeof propDesc.value === 'function' &&
-        propDesc.value.prototype &&
-        (propDesc.value.prototype instanceof ListModel)
-        ) {
-        listEnums[prop] = propDesc;
-      }
-    }
-
-    return listEnums;
-  }
-
-  private static defineProperty(
+export default abstract class ObjectModel {
+  private static defineProperty (
     target: any,
     prop: string,
     propDesc: PropertyDescriptor,
@@ -132,40 +9,35 @@ export default abstract class AdvenceModel {
   ) {
     Object.defineProperty(target, prop, {
       ...propDesc,
-      value,
-    });
+      value
+    })
   }
 
-  static buildFromObj<T extends AdvenceModel>(
+  static buildFromObj<T extends ObjectModel>(
     this: { new (): T },
     argObj: DefaultRecord,
-    remapper?: GetEnumerableFromInstance<T>
+    // remapper?: GetEnumerableFromInstance<T>
   ): T {
-    console.log(this.name, {argObj});
-    const modelToUse = this;
-    const newThis = new modelToUse();
-    const propsDescriptors = getAllPropertyDescriptors(newThis);
-    console.log({ propsDescriptors, newThis });
-    const methods = AdvenceModel.getAllMethods(propsDescriptors);
-    const setters = AdvenceModel.getAllSetters(propsDescriptors);
-    const enumsBasic = AdvenceModel.getBasicEnumerables(propsDescriptors);
-    const enumsFunction =
-      AdvenceModel.getEnumerablesHasFunction(propsDescriptors);
-    const enumsAdvenceModel =
-      AdvenceModel.getEnumerablesHasProtoAdvenceModel(propsDescriptors);
-      const enumsListModel =
-      AdvenceModel.getEnumerablesHasProtoListModel(propsDescriptors);
-    const { $schema, ...otherMethods } = methods;
-    const reservedMethods = { $schema };
+    const ModelToUse = this
+    const newThis = new ModelToUse()
+    console.log('buildFromObj : ', {fromInstance: this.name, argObj})
 
-    for (const prop in enumsBasic) {
-      const propDesc = enumsBasic[prop];
-      AdvenceModel.defineProperty(newThis, prop, propDesc, argObj[prop]);
+    const propsDesc = ModelsCore.getAllPropertiesDespcriptor(newThis)
+    const enumsBasics = ModelsCore.getBasicEnumerables(propsDesc)
+    const enumsLists = ModelsCore.getEnumerablesHasProtoListModel(propsDesc)
+    const enumsObjectModels = ModelsCore.getEnumerablesHasProtoObjectModel(propsDesc)
+    const enumsFunctions = ModelsCore.getEnumerablesHasFunction(propsDesc)
+    const methods = ModelsCore.getAllMethods(propsDesc)
+    const setters = ModelsCore.getAllSetters(propsDesc)
+
+    for (const prop in enumsBasics) {
+      const propDesc = enumsBasics[prop];
+      ObjectModel.defineProperty(newThis, prop, propDesc, argObj[prop]);
     }
 
-    for (const prop in enumsFunction) {
-      const propDesc = enumsFunction[prop];
-      AdvenceModel.defineProperty(
+    for (const prop in enumsFunctions) {
+      const propDesc = enumsFunctions[prop]
+      ObjectModel.defineProperty(
         newThis,
         prop,
         propDesc,
@@ -173,33 +45,32 @@ export default abstract class AdvenceModel {
       );
     }
 
-    for (const prop in enumsAdvenceModel) {
-      const propDesc = enumsAdvenceModel[prop];
-      AdvenceModel.defineProperty(
+    for (const prop in enumsObjectModels) {
+      const propDesc = enumsObjectModels[prop]
+      ObjectModel.defineProperty(
         newThis,
         prop,
         propDesc,
-        propDesc.value.buildFromObj(argObj)
-      );
+        propDesc.value.buildFromObj(argObj[prop])
+      )
     }
 
-    for (const prop in enumsListModel) {
-      const propDesc = enumsListModel[prop];
-      AdvenceModel.defineProperty(
+    for (const prop in enumsLists) {
+      const propDesc = enumsLists[prop]
+      ObjectModel.defineProperty(
         newThis,
         prop,
         propDesc,
         propDesc.value.buildListFromArray(argObj[prop])
-      );
+      )
     }
 
-
-    Object.defineProperties(newThis, { ...otherMethods, ...setters });
+    Object.defineProperties(newThis, { ...setters, ...methods })
 
     for (const prop in setters) {
-      newThis[prop] = argObj[prop];
+      newThis[prop] = argObj[prop]
     }
 
-    return newThis;
+    return newThis
   }
 }

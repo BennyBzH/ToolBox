@@ -1,8 +1,8 @@
 import { AddressModel } from '../Address';
-import AdvenceModel from '../../Toolbox/Classes/AdvenceModel/AdvenceModel';
+import ObjectModel from '../../Toolbox/ModelsCore/ObjectModel';
 import Role from '../Roles/RoleList.model';
 
-export default class User extends AdvenceModel {
+export default class User extends ObjectModel {
   fullname?: string;
   firstname?: string;
   lastname?: string;
@@ -25,7 +25,7 @@ export default class User extends AdvenceModel {
   }
 
   addAge(n: number) {
-    return (this.age += n);
+    return (this.age += n)
   }
 
   getFullname() {

@@ -1,6 +1,6 @@
-import AdvenceModel from '../../Toolbox/Classes/AdvenceModel/AdvenceModel';
+import ObjectModel from '../../Toolbox/ModelsCore/ObjectModel';
 
-export default class Address extends AdvenceModel {
+export default class Address extends ObjectModel {
   street?: string;
   city?: String;
 }

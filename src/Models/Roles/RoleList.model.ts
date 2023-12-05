@@ -1,14 +1,14 @@
-import ListModel from "../../Toolbox/Classes/ListModel/ListModel";
+import ListModel from '../../Toolbox/ModelsCore/ListModel'
 
 export default class RoleList extends ListModel {
-    constructor() {
-        super(String);
-    }
+  constructor () {
+    super((arg) => arg)
+  }
 
-    static ROLE_ADMIN = 'ROLE_ADMIN';
-    static ROLE_NORMAL = 'ROLE_NORMAL';
+  static ROLE_ADMIN = 'ROLE_ADMIN'
+  static ROLE_NORMAL = 'ROLE_NORMAL'
 
-    isAdmin() {
-        return this.includes(RoleList.ROLE_ADMIN);
-    }
+  isAdmin (): boolean {
+    return this.includes(RoleList.ROLE_ADMIN)
+  }
 }

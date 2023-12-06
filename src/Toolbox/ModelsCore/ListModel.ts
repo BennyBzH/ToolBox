@@ -1,22 +1,23 @@
-import AdvenceModel from '../../../Toolbox/Classes/AdvenceModel/AdvenceModel';
-import BaseModel from '../../../Toolbox/Classes/BaseModel/BaseModel';
 import ObjectModel from './ObjectModel';
 
 export default abstract class ListModel extends Array {
-  #__CurrentModel = null
+  #__CurrentModel;
 
-  constructor(Model) {
+  constructor(Model: any) {
     super()
     this.#__CurrentModel = Model
   }
 
-  static buildListFromArray(argArray: unknown[]) {
+  static buildListFromArray<T extends ListModel>(
+    this: { new (): T },
+    argArray: unknown[]) {
     if (!Array.isArray(argArray))
       throw new TypeError('buildListFromArray, argArray must be an Array type')
 
-    const currentThis = this
-    const newThis = new currentThis()
+    const NewThis = this
+    const newThis = new NewThis()
     const modelToUse = newThis.#__CurrentModel
+    console.log({ this: this, newThis, modelToUse });
     const modelToUseIsInstanceOfObjectModel = modelToUse.prototype instanceof ObjectModel
 
     for (const itm of argArray) {

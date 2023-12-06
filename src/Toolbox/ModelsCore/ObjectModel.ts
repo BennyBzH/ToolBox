@@ -1,4 +1,5 @@
 import ModelsCore from './Core'
+import ListModel from './ListModel'
 
 type DefaultRecord = Record<string, unknown>
 
@@ -20,27 +21,26 @@ export default abstract class ObjectModel {
     argObj: DefaultRecord
     // remapper?: GetEnumerableFromInstance<T>
   ): T {
-    const ModelToUse = this as unknown as T
-    const newThis = new ModelToUse()
-    console.log('buildFromObj : ', { fromInstance: this.name, argObj })
+    const ModelToUse = this
+    const NewInstance = new ModelToUse()
 
-    const propsDesc = ModelsCore.getAllPropertiesDespcriptor(newThis)
+    const propsDesc = ModelsCore.getAllPropertiesDespcriptor(NewInstance)
     const enumsBasics = ModelsCore.getBasicEnumerables(propsDesc)
-    const enumsLists = ModelsCore.getEnumerablesHasProtoListModel(propsDesc)
-    const enumsObjectModels = ModelsCore.getEnumerablesHasProtoObjectModel(propsDesc)
+    const enumsLists = ModelsCore.getEnumerablesInstanceOf(propsDesc, ListModel)
+    const enumsObjectModels = ModelsCore.getEnumerablesInstanceOf(propsDesc, ObjectModel)
     const enumsFunctions = ModelsCore.getEnumerablesHasFunction(propsDesc)
     const methods = ModelsCore.getAllMethods(propsDesc)
     const setters = ModelsCore.getAllSetters(propsDesc)
 
     for (const prop in enumsBasics) {
       const propDesc = enumsBasics[prop];
-      ObjectModel.defineProperty(newThis, prop, propDesc, argObj[prop])
+      ObjectModel.defineProperty(NewInstance, prop, propDesc, argObj[prop])
     }
 
     for (const prop in enumsFunctions) {
       const propDesc = enumsFunctions[prop]
       ObjectModel.defineProperty(
-        newThis,
+        NewInstance,
         prop,
         propDesc,
         propDesc.value(argObj[prop])
@@ -50,7 +50,7 @@ export default abstract class ObjectModel {
     for (const prop in enumsObjectModels) {
       const propDesc = enumsObjectModels[prop]
       ObjectModel.defineProperty(
-        newThis,
+        NewInstance,
         prop,
         propDesc,
         propDesc.value.buildFromObj(argObj[prop])
@@ -60,21 +60,21 @@ export default abstract class ObjectModel {
     for (const prop in enumsLists) {
       const propDesc = enumsLists[prop]
       ObjectModel.defineProperty(
-        newThis,
+        NewInstance,
         prop,
         propDesc,
         propDesc.value.buildListFromArray(argObj[prop])
       )
     }
 
-    Object.defineProperties(newThis, { ...setters, ...methods })
+    Object.defineProperties(NewInstance, { ...setters, ...methods })
 
     for (const prop in setters) {
-      newThis[prop] = argObj[prop]
+      Object.assign(NewInstance, { [prop]: argObj[prop] })
     }
 
-    console.log('before return :', { newThis })
+    // console.log('before return :', { newThis })
 
-    return newThis
+    return NewInstance
   }
 }

@@ -4,6 +4,7 @@ import ListModel from './ListModel'
 type DefaultRecord = Record<string, unknown>
 
 export default abstract class ObjectModel {
+
   private static defineProperty (
     target: any,
     prop: string,
@@ -23,7 +24,6 @@ export default abstract class ObjectModel {
   ): T {
     const ModelToUse = this
     const NewInstance = new ModelToUse()
-
     const propsDesc = ModelsCore.getAllPropertiesDespcriptor(NewInstance)
     const enumsBasics = ModelsCore.getBasicEnumerables(propsDesc)
     const enumsLists = ModelsCore.getEnumerablesInstanceOf(propsDesc, ListModel)

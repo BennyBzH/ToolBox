@@ -13,16 +13,16 @@ export default class ModelsCore {
     '__lookupGetter__',
     '__lookupSetter__',
   ]
-  
-  static omit (arg0: Record<string, unknown>, arr: string[]) {
+
+  static omit(arg0: Record<string, unknown>, arr: string[]) {
     if (typeof arg0 !== 'object') throw new TypeError('ModelsCore.omit `arg0` must be an object')
     return Object.keys(arg0)
       .filter(k => !arr.includes(k))
-      .reduce((acc, key) => (Object.assign(acc, {[key]: arg0[key]}), acc), {});
+      .reduce((acc, key) => (Object.assign(acc, { [key]: arg0[key] }), acc), {});
   }
 
-  
-  static getAllPropertiesDespcriptor (arg0: Record<string, unknown>): Record<string, PropertyDescriptor> {
+
+  static getAllPropertiesDespcriptor(arg0: Record<string, unknown>): Record<string, PropertyDescriptor> {
     if (typeof arg0 !== 'object') throw new TypeError('ModelsCore.getAllPropertiesDespcriptor `arg0` must be an object')
     return ModelsCore.omit({
       ...Object.getOwnPropertyDescriptors(Object.getPrototypeOf(arg0)),
@@ -30,7 +30,7 @@ export default class ModelsCore {
     }, ModelsCore.DEFAULT_OMIT)
   }
 
-  static filterPropertiesBy (props: Record<string, PropertyDescriptor>, fnFilters: (arg0: PropertyDescriptor) => boolean): Record<string, PropertyDescriptor> {
+  static filterPropertiesBy(props: Record<string, PropertyDescriptor>, fnFilters: (arg0: PropertyDescriptor) => boolean): Record<string, PropertyDescriptor> {
     if (typeof fnFilters !== 'function') throw new TypeError('ModelsCore.filterPropertiesBy `fnFilter` must be a function')
     const listPicks = {}
 
@@ -43,25 +43,25 @@ export default class ModelsCore {
         if (boolResult) {
           Object.assign(listPicks, { [prop]: propDesc })
         }
-      } catch(e){}
+      } catch (e) { }
     }
 
     return listPicks
   }
 
-  static getAllMethods (props: Record<string, PropertyDescriptor>) {
+  static getAllMethods(props: Record<string, PropertyDescriptor>) {
     return ModelsCore.filterPropertiesBy(props, (desc) => Boolean(!desc.enumerable && typeof desc.set === 'undefined'))
   }
 
-  static getAllSetters (props: Record<string, PropertyDescriptor>) {
+  static getAllSetters(props: Record<string, PropertyDescriptor>) {
     return ModelsCore.filterPropertiesBy(props, (desc) => Boolean(desc.set && typeof desc.set === 'function'))
   }
 
-  static getBasicEnumerables (props: Record<string, PropertyDescriptor>) {
-    return ModelsCore.filterPropertiesBy(props, (desc) =>  Boolean(desc.enumerable && !(desc.value && typeof desc.value === 'function')))
+  static getBasicEnumerables(props: Record<string, PropertyDescriptor>) {
+    return ModelsCore.filterPropertiesBy(props, (desc) => Boolean(desc.enumerable && !(desc.value && typeof desc.value === 'function')))
   }
 
-  static getEnumerablesHasFunction (props: Record<string, PropertyDescriptor>) {
+  static getEnumerablesHasFunction(props: Record<string, PropertyDescriptor>) {
     return ModelsCore.filterPropertiesBy(props, (desc) => Boolean(
       desc.enumerable &&
       desc.value &&

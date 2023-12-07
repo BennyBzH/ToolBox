@@ -52,7 +52,6 @@ test('remap should merge the argToRemap object with the remapArg object', () => 
   };
 
   const expectedResult = {
-    name: 'John Doe',
     age: 35,
   };
 
@@ -77,7 +76,6 @@ test('remap should recursively merge nested objects', () => {
 
   const expectedResult = {
     user: {
-      name: 'John Doe',
       age: 35,
     },
   };

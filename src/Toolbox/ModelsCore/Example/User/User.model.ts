@@ -1,5 +1,5 @@
+import ObjectModel from '../../ObjectModel';
 import { AddressModel } from '../Address';
-import ObjectModel from '../../Toolbox/ModelsCore/ObjectModel';
 import Role from '../Roles/RoleList.model';
 
 export default class User extends ObjectModel {
@@ -10,22 +10,13 @@ export default class User extends ObjectModel {
   address = AddressModel;
   roles = Role;
   parents?: [];
-  #test: string;
-
-  bbb = () => {
-    return;
-  };
-
-  set aaa(test: string) {
-    this.#test = test;
-  }
-
-  get aaa() {
-    return this.#test;
-  }
-
+  
   addAge(n: number) {
     return (this.age += n)
+  }
+
+  ageIsGt(moreThan: number) {
+    return (this.age > moreThan);
   }
 
   getFullname() {

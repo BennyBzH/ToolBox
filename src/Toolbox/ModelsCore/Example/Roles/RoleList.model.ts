@@ -1,4 +1,4 @@
-import ListModel from '../../Toolbox/ModelsCore/ListModel'
+import ListModel from "../../ListModel"
 
 export default class RoleList extends ListModel {
   constructor () {

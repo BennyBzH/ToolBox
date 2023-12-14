@@ -15,19 +15,18 @@ export default abstract class ListModel extends Array {
       throw new TypeError('buildListFromArray, argArray must be an Array type')
 
     const NewThis = this
-    const newThis = new NewThis()
-    const modelToUse = newThis.#__CurrentModel
-    console.log({ this: this, newThis, modelToUse });
+    const NewInstance = new NewThis()
+    const modelToUse = NewInstance.#__CurrentModel
     const modelToUseIsInstanceOfObjectModel = modelToUse.prototype instanceof ObjectModel
 
     for (const itm of argArray) {
       if (modelToUseIsInstanceOfObjectModel) {
-        newThis.push(modelToUse.buildFromObj(itm))
+        NewInstance.push(modelToUse.buildFromObj(itm))
       } else {
-        newThis.push(modelToUse(itm))
+        NewInstance.push(modelToUse(itm))
       }
     }
 
-    return newThis
+    return NewInstance
   }
 }

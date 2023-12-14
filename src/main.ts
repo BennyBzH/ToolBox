@@ -1,5 +1,4 @@
 import './style.css';
-import './test/test';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>

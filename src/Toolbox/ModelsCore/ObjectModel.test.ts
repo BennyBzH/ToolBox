@@ -27,7 +27,6 @@ describe('User', () => {
 
   test('should initialize with build', () => {
     const user = UserModel.buildFromObj(objectTest);
-    console.log({user})
     expect(user.fullname).toBeUndefined();
     expect(user.firstname).toBe(objectTest.firstname);
     expect(user.lastname).toBe(objectTest.lastname);
